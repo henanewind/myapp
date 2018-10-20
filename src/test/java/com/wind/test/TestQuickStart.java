@@ -2,6 +2,7 @@ package com.wind.test;
 
 import com.wind.dao.PersonDao;
 import com.wind.entity.Person;
+import com.wind.service.PersonService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -61,7 +62,7 @@ public class TestQuickStart {
     @Test
     public void testFindByIdIsLessThanAndBirthLessThan() {
         PersonDao personDao = ctx.getBean(PersonDao.class);
-        List<Person> list = personDao.findByIdIsLessThanAndBirthLessThan(3, new Date());
+        List<Person> list = personDao.findByIdIsAndBirthLessThan(3, new Date());
         for (Person person : list) {
             System.out.println("查询结果： name=" + person.getName()
                     + ",id=" + person.getId() + ",birth=" + person.getBirth());
@@ -76,11 +77,52 @@ public class TestQuickStart {
     public void testFindByAddressId() {
         PersonDao personDao = ctx.getBean(PersonDao.class);
         // 查出地址id为1的person集合
-        List<Person> list = personDao.findByAddressId(1);
+        List<Person> list = personDao.findByAddressId(3);
         for (Person person : list) {
             System.out.println(person.getName()
                     + "---addressId="
                     + person.getAddress().getId());
         }
+    }
+
+    /**
+     * 测试用Query注解自定义的方法
+     */
+    @Test
+    public void testCustomMethod() {
+        PersonDao personDao = ctx.getBean(PersonDao.class);
+        List<Person> list = personDao.testPerson(2, "%admin%");
+        for (Person person : list) {
+            System.out.println("查询结果： name=" + person.getName() + ",id=" + person.getId());
+        }
+        System.out.println("===============分割线===============");
+        Person person = personDao.testSubquery();
+        System.out.println("查询结果： name=" + person.getName() + ",id=" + person.getId());
+    }
+
+    /**
+     * 测试命名参数
+     */
+    @Test
+    public void testNameMethod() {
+        PersonDao personDao = ctx.getBean(PersonDao.class);
+        List<Person> list = personDao.testPerson2(8, "1");
+        for (Person person : list) {
+            System.out.println("查询结果： name=" + person.getName() + ",id=" + person.getId());
+        }
+    }
+
+    @Test
+    public void testNavtieSqlMethod() {
+        PersonDao personDao = ctx.getBean(PersonDao.class);
+        Person person = personDao.getPersonByIdWithSql(6);
+        System.out.println("查询结果： name=" + person.getName() + ",id=" + person.getId());
+    }
+
+    @Test
+    public void testUpdate() {
+        PersonService personService = ctx.getBean(PersonService.class);
+        int rows = personService.updatePersonById(3, "test1");
+        System.out.println("影响行数为：" + rows);
     }
 }
