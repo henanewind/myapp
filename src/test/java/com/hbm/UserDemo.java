@@ -1,5 +1,6 @@
 package com.hbm;
 
+import com.hbm.domain.Book;
 import com.hbm.domain.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,12 +11,17 @@ import org.hibernate.cfg.Configuration;
  * @author wind
  * @date 2018/12/29
  */
-public class UserTest {
+public class UserDemo {
     public static void main(String[] args) {
         User user = new User();
         user.setUserName("user");
         user.setAddress("zhengzhou");
         user.setPassword("123");
+
+        Book book = new Book();
+        book.setName("java");
+        book.setAuthor("Broke");
+        book.setPrice(100);
 
         //获取加载配置管理类
         Configuration configuration = new Configuration();
@@ -37,6 +43,7 @@ public class UserTest {
 
         //把对象添加到数据库中
         session.save(user);
+        session.save(book);
 
         //提交事务
         transaction.commit();
